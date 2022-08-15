@@ -70,11 +70,19 @@ export default {
     // 登录
     async loginBtn() {
       try {
+        // 登录前的预校验
         await this.$refs.loginForm.validate()
+        // 登录按钮处于加载状态
+        this.loading = true
+        // 发送登录请求
+        await this.$store.dispatch('setToken', this.loginFormData)
+        // 跳转
+        this.$router.push('/')
       } catch (error) {
         return error
+      } finally {
+        this.loading = false
       }
-      this.loading = true
     }
   }
 }
