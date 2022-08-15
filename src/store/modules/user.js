@@ -24,8 +24,9 @@ export default {
 
   actions: {
     async setToken(context, loginFormData) {
-      const { data: { data }} = await loginAPI(loginFormData)
-      context.commit('SET_TOKEN', data)
+      // 在响应拦截器中对请求回来的数据进行了处理
+      const token = await loginAPI(loginFormData)
+      context.commit('SET_TOKEN', token)
     }
   }
 }
