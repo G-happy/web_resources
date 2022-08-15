@@ -1,91 +1,88 @@
 <template>
-  <div class="pagination">
-    <div class="left">
-      <span class="total">共 {{ total }} 条数据</span>
-      <span class="current">当前 {{ current }} / {{ paginationSum }} 页</span>
-    </div>
-    <div class="right">
-      <button class="pre" :disabled="current === 1 ? true : false" @click="toPre">上一页</button>
-      <button class="next" :disabled="current === paginationSum ? true : false " @click="toNext">下一页</button>
+  <div class="pagination-container">
+    <div class="myPagination">
+      <div class="total">
+        共 {{ total }} 条记录 &nbsp;&nbsp; 第 {{ currentPage }} / {{ sumPage }} 页
+      </div>
+      <div>
+        <button :disabled="currentPage === 1 ? true : false" @click="changePageFn(-1)">上一页</button>
+        <button :disabled="currentPage === sumPage ? true : false" @click="changePageFn(1)">下一页</button>
+      </div>
     </div>
   </div>
-</template>
 
+</template>
 <script>
 export default {
-  name: 'Pagination',
+  name: 'MyPagination',
   props: {
     // 总条数
     total: {
       type: Number,
       default: 101
     },
-    // 每页条数
-    num: {
+    // 当前页数
+    currentPage: {
       type: Number,
-      default: 10
+      default: 1
     },
-    // 列表数组
-    list: {
-      type: Array,
-      default: () => []
-    }
-  },
-  data() {
-    return {
-      current: 1
+    // 每页数据量
+    pageSize: {
+      type: Number,
+      default: 20
     }
   },
   computed: {
     // 总页数
-    paginationSum() {
-      const res = this.total / this.num
-      if (Math.floor(res) === res) {
-        return res
+    sumPage() {
+      const page = this.total / this.pageSize
+      if (Math.floor(page) === page) {
+        return page
       }
-      return Math.floor(res) + 1
+      return Math.floor(page) + 1
     }
-    // // 根据当前页码展示的部分数据的数组
-    // currentList() {
-    //   // 每页第一条数据的索引值
-    //   const currentFirtIndex = (this.current - 1) * this.num
-    //   return this.list.filter((_, index) => index >= currentFirtIndex && index < currentFirtIndex + this.num)
-    // }
   },
-  // watch: {
-  //   current() {
-  //     console.log(this.current)
-  //     this.$parent.list = this.currentList
-  //   }
-  // },
   methods: {
-    toPre() {
-      if (this.current > 1) {
-        this.current--
-      }
-    },
-    toNext() {
-      if (this.current < this.paginationSum) {
-        this.current++
-      }
+    changePageFn(val) {
+      this.$emit('changePage', this.currentPage + val)
     }
-
   }
 }
-
 </script>
 
-<style scoped lang="less">
-.pagination{
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    padding: 15px 25px;
-    border-top: 1px solid #eee;
-    border-bottom: 1px solid #eee;
+<style lang="scss" scoped>
+.pagination-container{
+  background: #fff;
+  padding: 32px 16px;
+  .myPagination {
+  display: flex;
+  justify-content:space-between;
+  font-size: 16px;
+  padding: 0;
+  button {
+    width: 70px;
+    margin: 0 16px;
+    border-radius: 2px;
+    background-color: #d5ddf8;
+    outline: none;
+    border:none;
+    color: #606266;
+    height: 32px;
+    line-height:32px;
+  }
+  button:disabled {
+    background: #edf0f9;
+    color: #d8dde3;
+    cursor: no-drop;
+  }
+  .total {
+    margin-right: 10px;
+    font-weight: 400;
+    color: #dbdfe5;
+    height: 32px;
+    line-height:32px;
+  }
 }
-span,button{
-  margin-right: 20px;
 }
 
 </style>
