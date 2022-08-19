@@ -6,9 +6,12 @@ import store from '@/store'
 const whiteList = ['/login', '/404']
 
 // 路由前置守卫
-router.beforeEach((to, from, next) => {
+router.beforeEach(async(to, from, next) => {
   // 1.已有token
   if (store.getters.token) {
+    if (!store.getters.userId) {
+      await store.dispatch('getUserInfo')
+    }
     // 1.1 如果还要去登录页,则跳转到首页
     if (to.path === '/login') {
       next('/')
