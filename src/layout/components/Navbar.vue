@@ -24,7 +24,7 @@
           <router-link to="/">
             <el-dropdown-item>Home</el-dropdown-item>
           </router-link>
-          <el-dropdown-item divided @click.native="logout">
+          <el-dropdown-item divided @click.native="logoutBtn">
             <span style="display: block">Log Out</span>
           </el-dropdown-item>
         </el-dropdown-menu>
@@ -65,6 +65,11 @@ export default {
     async logout() {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+    },
+    // 退出
+    logoutBtn() {
+      this.$store.dispatch('logout')
+      this.$router.push('/login')
     }
   }
 }
