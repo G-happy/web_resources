@@ -1,4 +1,4 @@
-import { loginAPI, getUserInfoAPI } from '@/api'
+import { loginAPI, getUserInfoAPI, getUserAvator } from '@/api'
 //
 import { setToken, getToken, removeToken } from '@/utils/auth'
 export default {
@@ -39,8 +39,8 @@ export default {
     },
     async getUserInfo(context) {
       const res = await getUserInfoAPI()
-      // console.log(res)
-      context.commit('SET_USER_INFO', res)
+      const data = await getUserAvator(res.userId)
+      context.commit('SET_USER_INFO', { ...res, ...data })
     }
   }
 }

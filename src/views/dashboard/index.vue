@@ -13,7 +13,6 @@ export default {
     ...mapGetters(['token'])
   },
   mounted() {
-    // this.$store.dispatch('getUserInfo')
   }
 }
 </script>
