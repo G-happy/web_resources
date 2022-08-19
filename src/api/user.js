@@ -12,6 +12,9 @@ export function loginAPI(data) {
   })
 }
 
-export function logout() {
-
+export function getUserInfoAPI() {
+  return request({
+    url: '/sys/profile',
+    method: 'POST'
+  })
 }

@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
 
-const TokenKey = 'likede_project_token'
+const TokenKey = 'resources_token'
 
 // 获取
 export function getToken() {

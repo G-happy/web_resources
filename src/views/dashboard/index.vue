@@ -11,6 +11,9 @@ export default {
   name: 'Dashboard',
   computed: {
     ...mapGetters(['token'])
+  },
+  mounted() {
+    this.$store.dispatch('getUserInfo')
   }
 }
 </script>
