@@ -1,5 +1,6 @@
 <template>
   <section class="app-main">
+    <!-- 路由动画 -->
     <transition name="fade-transform" mode="out-in">
       <router-view :key="key" />
     </transition>

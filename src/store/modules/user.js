@@ -50,7 +50,6 @@ export default {
       const res = await getUserInfoAPI()
       const data = await getUserAvator(res.userId)
       context.commit('SET_USER_INFO', { ...res, ...data })
-      console.log({ ...res, ...data })
     },
     // 退出
     logout(context) {
