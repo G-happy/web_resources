@@ -57,5 +57,4 @@ export default {
       context.commit('REMOVE_USER_INFO')
     }
   }
-
 }
