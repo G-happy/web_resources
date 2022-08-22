@@ -24,3 +24,27 @@ export function addRolesAPI(data) {
     data
   })
 }
+
+/**
+ * 编辑角色
+ * @param {Object} data 角色名称和角色描述
+ * @returns Promise
+ */
+export function updataRolesAPI(data) {
+  return request({
+    url: `/sys/role/${data.id}`,
+    method: 'PUT',
+    data
+  })
+}
+
+/** **
+ *  删除角色
+ *
+ * ****/
+export function deleteRoleAPI(id) {
+  return request({
+    url: `/sys/role/${id}`,
+    method: 'delete'
+  })
+}

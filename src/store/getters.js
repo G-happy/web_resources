@@ -7,6 +7,7 @@ const getters = {
   staffPhoto: state => state.user.userInfo.staffPhoto,
   hrsaasTime: state => state.user.hrsaasTime,
   rolesList: state => state.roles.rolesList,
-  total: state => state.roles.total
+  total: state => state.roles.total,
+  addDialogVisible: state => state.roles.addDialogVisible
 }
 export default getters
