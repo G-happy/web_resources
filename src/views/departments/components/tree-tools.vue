@@ -52,9 +52,9 @@ export default {
         this.$emit('addDepts', this.treeNode)
       } else if (type === 'edit') {
         // 编辑
+        this.$emit('editDepts', this.treeNode)
       } else {
-        // 删除
-        //  删除操作
+        // 删除操作
         this.$confirm('您确定删除该部门的数据吗？', '删除提示', {
           cancelButtonText: '取消',
           confirmButtonText: '确定'

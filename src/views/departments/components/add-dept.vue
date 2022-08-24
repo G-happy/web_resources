@@ -1,7 +1,7 @@
 <template>
   <!-- 新增部门的弹层 -->
   <!-- before-close 为点击关闭按钮和遮罩层关闭弹层的回调 -->
-  <el-dialog title="新增部门" :visible.sync="showDialog" :before-close="cancelBtn">
+  <el-dialog :title="title" :visible.sync="showDialog" :before-close="cancelBtn">
     <!-- 表单组件  el-form   label-width设置label的宽度   -->
     <!-- 匿名插槽 -->
     <el-form ref="formRef" label-width="120px" :rules="rules" :model="formData">
@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { getDepartmentsAPI, addDepartmentsAPI, getEmployeesSimpleAPI } from '@/api'
+import { getDepartmentsAPI, addDepartmentsAPI, getEmployeesSimpleAPI, getDepartDetailAPI, editDepartDetailAPI } from '@/api'
 
 export default {
   props: {
@@ -54,18 +54,37 @@ export default {
       // value 是当前部门名称
       // 先要获取最新的组织架构数据列表
       const { depts } = await getDepartmentsAPI()
-      // 当前点击部门的所有子部门
-      const list = depts.filter(item => item.pid === this.treeNode.id)
-      // 判断是否存在相同的部门
-      const isRepeat = list.some(item => item.name === value)
-
+      let isRepeat
+      // 区分新增和编辑
+      if (this.formData.id) {
+        // 1. 编辑(同级部门下,不能和其他的部门名称重复)
+        // 当前点击部门的所有同级部门,且不包含自己
+        const lists = depts.filter(item => item.pid === this.treeNode.pid && item.id !== this.treeNode.id)
+        // 判断 lists 中是否有 和自己相同的name
+        isRepeat = lists.some(item => item.name === this.treeNode.name)
+      } else {
+        // 2. 新增
+        // 当前点击部门的所有子部门
+        const list = depts.filter(item => item.pid === this.treeNode.id)
+        // 判断是否存在相同的部门
+        isRepeat = list.some(item => item.name === value)
+      }
       isRepeat ? callback(new Error(`同级部门下已存在'${value}'部门`)) : callback()
     }
     // 检查编码重复
     const checkCodeRepeat = async(rule, value, callback) => {
       // 先要获取最新的组织架构数据
       const { depts } = await getDepartmentsAPI()
-      const isRepeat = depts.some(item => item.code === value && value) // 这里加一个 value不为空 因为我们的部门有可能没有code
+      let isRepeat
+      if (this.formData.id) {
+        // 1. 编辑
+        // 排除自己
+        isRepeat = depts.filter(item => item.id !== this.treeNode.id).some(item => item.code === value && value)
+      } else {
+        // 2. 新增
+        // 这里加一个 value不为空 因为我们的部门有可能没有code
+        isRepeat = depts.some(item => item.code === value && value)
+      }
       isRepeat ? callback(new Error(`组织架构中已经有部门使用${value}编码`)) : callback()
     }
     return {
@@ -98,6 +117,12 @@ export default {
       peoples: []
     }
   },
+  computed: {
+    title() {
+      // 根据 formData 中是否有 id 属性
+      return this.formData.id ? '编辑部门' : '新增子部门'
+    }
+  },
   methods: {
     // 取消 / 点击关闭按钮和阴影区域
     cancelBtn() {
@@ -122,12 +147,18 @@ export default {
       this.$refs.formRef.validate(async valid => {
         // valid 的值为布尔值
         if (valid) {
-          // 添加的新部门的pid,为父级部门的id,代表是在当前部门下添加新部门
-          await addDepartmentsAPI({ ...this.formData, pid: this.treeNode.id })
-          // 信息提示
-          this.$message.success('新增部门成功!')
-          // 刷新页面
-          this.$emit('addDepts')
+          // 区分时编辑还是添加
+          if (this.formData.id) {
+            // 1. 编辑
+            await editDepartDetailAPI(this.formData)
+            this.$message.success('编辑部门成功!')
+          } else {
+            // 2. 添加
+            // 添加的新部门的pid,为父级部门的id,代表是在当前部门下添加新部门
+            await addDepartmentsAPI({ ...this.formData, pid: this.treeNode.id })
+            // 信息提示
+            this.$message.success('新增部门成功!')
+          }
           // 关闭弹窗
           // 格式:  this.$emit('update:props中的值', 修改后的值)
           // 含义:  将props中的值 showDialog 改为 value
@@ -135,8 +166,20 @@ export default {
           this.$emit('update:showDialog', false)
           // 清空表单数据
           this.$refs.formRef.resetFields()
+          this.formData = {
+            name: '', // 部门名称
+            code: '', // 部门编码
+            manager: '', // 部门管理者
+            introduce: '' // 部门介绍
+          }
+          // 刷新页面(重新获取数据)
+          this.$emit('addDepts')
         }
       })
+    },
+    // 根据id获取部门详情
+    async getDepartDetail(id) {
+      this.formData = await getDepartDetailAPI(id)
     }
 
   }

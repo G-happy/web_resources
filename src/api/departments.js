@@ -32,3 +32,27 @@ export function addDepartmentsAPI(data) {
     data
   })
 }
+
+/**
+ * 根据 id 获取部门详情
+ * @param {String} id 部门id
+ * @returns
+ */
+export function getDepartDetailAPI(id) {
+  return request({
+    url: `/company/department/${id}`
+  })
+}
+
+/**
+ * 根据 id 编辑部门详情
+ * @param {Object} 部门信息
+ * @returns
+ */
+export function editDepartDetailAPI(data) {
+  return request({
+    url: `/company/department/${data.id}`,
+    method: 'PUT',
+    data
+  })
+}
