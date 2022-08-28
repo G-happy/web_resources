@@ -7,7 +7,7 @@
         <span slot="before">共{{ total }}条记录</span>
         <template slot="after">
           <el-button size="small" type="warning" @click="$router.push('/import?type=user')">导入</el-button>
-          <el-button size="small" type="danger">导出</el-button>
+          <el-button size="small" type="danger" @click="exportData">导出</el-button>
           <el-button size="small" type="primary" @click="showDialog = true">新增员工</el-button>
         </template>
       </PageTools>
@@ -60,6 +60,7 @@
 
 <script>
 import { getEmployeesDetailInfoAPI, delEmployeeAPI } from '@/api'
+import { formatDate } from '@/filters'
 // 处理聘用形式的数据
 import EmployeeEnum from '@/api/constant/employees'
 import addEmployee from './components/add-employee.vue'
@@ -121,6 +122,58 @@ export default {
       } catch (error) {
         console.log(error)
       }
+    },
+    /**
+     * 需要下载 npm install xlsx file-saver -S   npm install script-loader -S -D
+     */
+    // 导出
+    async exportData() {
+      // 获取所有列表数据
+      const { rows } = await getEmployeesDetailInfoAPI({
+        page: 1,
+        // size: this.total
+        size: 20
+      })
+      const headers = {
+        '手机号': 'mobile',
+        '姓名': 'username',
+        '入职日期': 'timeOfEntry',
+        '聘用形式': 'formOfEmployment',
+        '转正日期': 'correctionTime',
+        '工号': 'workNumber',
+        '部门': 'departmentName'
+      }
+      // 处理表头和内容
+      const header = Object.keys(headers)
+      const data = this.fromJson(headers, rows)
+
+      import('@/vendor/Export2Excel').then(excel => {
+        excel.export_json_to_excel({
+          header: header, // 表头 必填  ['姓名', '手机号', '入职日期', '聘用形式']
+          data: data, // 具体数据 必填 [['张三', '13399999', '2020-2020-2020', '正式']]
+          filename: 'excel-list', // 文件名称, 非必填
+          autoWidth: true, // 非必填
+          bookType: 'xlsx', // 非必填
+          multiHeader: [['手机号', '主要信息', '', '', '', '', '']], // 特殊表头
+          merges: ['A1:A2', 'B1:G1'] // 合并单元格
+        })
+      })
+    },
+    // 处理'导出'数据的方法
+    fromJson(headers, rows) {
+      return rows.map(ele => {
+        return Object.keys(headers).map(key => {
+          if (headers[key] === 'timeOfEntry' || headers[key] === 'correctionTime') {
+            // 格式化日期 -> 已经定义过过滤器直接使用即可
+            return formatDate(ele[headers[key]])
+          } else if (headers[key] === 'formOfEmployment') {
+            // 聘用形式 -> 需要引入EmployeeEnum常量进行处理
+            const obj = EmployeeEnum.hireType.find(obj => obj.id === +ele[headers[key]])
+            return obj ? obj.value : '非正式'
+          }
+          return ele[headers[key]]
+        })
+      })
     }
   }
 }

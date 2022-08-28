@@ -15,8 +15,8 @@
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img v-imgerror="defaultImg" :src="staffPhoto" class="user-avatar">
-
+          <!-- <img v-imgerror="defaultImg" :src="staffPhoto" class="user-avatar"> -->
+          <img src="@/assets/common/动画02.jpg" class="user-avatar">
           <span>{{ username }}</span>
           <i class="el-icon-caret-bottom" />
         </div>
