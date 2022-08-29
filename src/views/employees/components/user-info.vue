@@ -1,5 +1,12 @@
 <template>
   <div class="user-info">
+    <el-row type="flex" justify="end">
+      <el-tooltip content="打印个人基本信息">
+        <router-link :to="`/employees/print/${userId}?type=personal`">
+          <i class="el-icon-printer" />
+        </router-link>
+      </el-tooltip>
+    </el-row>
     <!-- 个人信息 -->
     <el-form label-width="220px">
       <!-- 工号 入职时间 -->
@@ -365,6 +372,7 @@ export default {
     // 获取人员详情数据
     async getPersonalDetail() {
       this.formData = await getPersonalDetailAPI(this.userId)
+
       // 员工照片(回显)
       this.$refs.emploteesPicRef.fileList.push({ url: this.formData.staffPhoto })
     },

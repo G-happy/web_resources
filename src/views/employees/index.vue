@@ -18,7 +18,17 @@
           <el-table-column label="姓名" prop="username" />
           <el-table-column label="头像">
             <template slot-scope="{row}">
-              <img :src="row.staffPhoto" alt="" style="border-radius: 50%; width: 100px; height: 100px; padding: 10px;">
+              <!-- 自定义指令处理图片路径为 空 问题的 -->
+              <img
+                v-imgerror="require('@/assets/common/动画02.jpg')"
+                :src="row.staffPhoto"
+                alt=""
+                style="border-radius: 50%;
+                width: 100px;
+                height: 100px;
+                padding: 10px;"
+                @click="showErCodeDialog(row.staffPhoto)"
+              >
             </template>
           </el-table-column>
           <el-table-column label="工号" prop="workNumber" />
@@ -60,6 +70,10 @@
     </div>
     <!-- 新增员工的弹层 -->
     <addEmployee :show-dialog.sync="showDialog" @getEmployeesDetailInfo="getEmployeesDetailInfo" />
+    <!-- 二维码 -->
+    <el-dialog title="头像二维码" :visible.sync="ercodeDialog" width="30%">
+      <canvas id="canvas" />
+    </el-dialog>
   </div>
 </template>
 
@@ -69,6 +83,8 @@ import { formatDate } from '@/filters'
 // 处理聘用形式的数据
 import EmployeeEnum from '@/api/constant/employees'
 import addEmployee from './components/add-employee.vue'
+// 生成二维码的插件
+import QrCode from 'qrcode'
 export default {
   name: 'Employees',
   components: { addEmployee },
@@ -85,7 +101,8 @@ export default {
       employeesList: [],
       // 新增员工弹层
       showDialog: false,
-      tableLoading: false
+      tableLoading: false,
+      ercodeDialog: false
     }
   },
   created() {
@@ -179,6 +196,17 @@ export default {
           return ele[headers[key]]
         })
       })
+    },
+    // 二维码
+    showErCodeDialog(staffPhoto) {
+      if (!staffPhoto) {
+        return this.$message.error('该用户未设置头像')
+      }
+      this.ercodeDialog = true
+      this.$nextTick(() => {
+        const canvas = document.getElementById('canvas')
+        QrCode.toCanvas(canvas, staffPhoto)
+      })
     }
   }
 }
@@ -189,6 +217,9 @@ export default {
   text-align: center;
 }
 ::v-deep .el-table--border th{
+  text-align: center;
+}
+::v-deep .el-dialog__body{
   text-align: center;
 }
 </style>
