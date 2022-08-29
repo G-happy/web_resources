@@ -7,7 +7,6 @@ import request from '@/utils/request'
 export function getEmployeesSimpleAPI() {
   return request({
     url: '/sys/user/simple'
-
   })
 }
 

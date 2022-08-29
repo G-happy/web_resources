@@ -23,7 +23,9 @@
           <!-- <component :is="userInfo" /> -->
         </el-tab-pane>
         <!-- 岗位信息 -->
-        <el-tab-pane label="岗位信息">岗位信息</el-tab-pane>
+        <el-tab-pane label="岗位信息">
+          <jobInfo />
+        </el-tab-pane>
       </el-tabs>
     </el-card>
   </div>
@@ -32,9 +34,10 @@
 <script>
 import { getUserAvator, saveUserDetailByIdAPI } from '@/api'
 import userInfo from './components/user-info.vue'
+import jobInfo from './components/job-info.vue'
 export default {
   name: 'Detail',
-  components: { userInfo },
+  components: { userInfo, jobInfo },
   data() {
     return {
       userInfo: {
@@ -63,6 +66,7 @@ export default {
     async getUserAvator() {
       this.userInfo = await getUserAvator(this.currentUserId)
       this.$refs.userInfoRef.userInfo = { ...this.userInfo }
+      this.$refs.userInfoRef.setAvator(this.userInfo.staffPhoto)
     },
     // 更新
     async updataUserInfo() {

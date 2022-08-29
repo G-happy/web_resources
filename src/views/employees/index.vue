@@ -16,6 +16,11 @@
         <el-table v-loading="tableLoading" border :data="employeesList">
           <el-table-column label="序号" sortable="" width="80" type="index" />
           <el-table-column label="姓名" prop="username" />
+          <el-table-column label="头像">
+            <template slot-scope="{row}">
+              <img :src="row.staffPhoto" alt="" style="border-radius: 50%; width: 100px; height: 100px; padding: 10px;">
+            </template>
+          </el-table-column>
           <el-table-column label="工号" prop="workNumber" />
           <el-table-column label="聘用形式" prop="formOfEmployment" :formatter="formatter" />
           <el-table-column label="部门" prop="departmentName" />

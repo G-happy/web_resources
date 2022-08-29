@@ -58,7 +58,7 @@
         <el-col :span="12">
           <el-form-item label="员工头像">
             <!-- 放置上传图片 -->
-
+            <Upload ref="UploadRef" @onSuccess="headerImgSuccess" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -67,7 +67,6 @@
         <el-col :span="12">
           <el-button type="primary" @click="saveUser">保存更新</el-button>
           <el-button @click="$router.back()">返回</el-button>
-
         </el-col>
       </el-row>
     </el-form>
@@ -90,6 +89,7 @@
 
         <el-form-item label="员工照片">
           <!-- 放置上传图片 -->
+          <Upload ref="emploteesPicRef" @onSuccess="picImgSuccess" />
         </el-form-item>
         <el-form-item label="国家/地区">
           <el-select v-model="formData.nationalArea" class="inputW2">
@@ -284,8 +284,10 @@
 <script>
 import EmployeeEnum from '@/api/constant/employees'
 import { updatePersonalAPI, getPersonalDetailAPI, saveUserDetailByIdAPI } from '@/api'
+import Upload from '@/components/Upload'
 export default {
   name: 'UserInfo',
+  components: { Upload },
   data() {
     return {
       userId: this.$route.params.id,
@@ -363,6 +365,8 @@ export default {
     // 获取人员详情数据
     async getPersonalDetail() {
       this.formData = await getPersonalDetailAPI(this.userId)
+      // 员工照片(回显)
+      this.$refs.emploteesPicRef.fileList.push({ url: this.formData.staffPhoto })
     },
     // 保存更新 (基础信息) (数据回显)
     async savePersonal() {
@@ -372,14 +376,27 @@ export default {
 
     // 上方的保存更新
     async saveUser() {
-    //  调用父组件
+      if (this.$refs.UploadRef.loading) {
+        return this.$message.warning('图片上传中...')
+      }
+      //  调用父组件
       await saveUserDetailByIdAPI(this.userInfo)
       this.$message.success('保存成功')
+    },
+    // 用户头像(回显)
+    setAvator(imgURL, picURL) {
+      this.$refs.UploadRef.fileList.push({ url: imgURL })
+    },
+
+    // 上传头像
+    headerImgSuccess({ url }) {
+      this.userInfo.staffPhoto = url
+    },
+    // 员工照片
+    picImgSuccess({ url }) {
+      console.log(url)
+      this.formData.staffPhoto = url
     }
-    //
-    // async getUserAvator() {
-    // this.userInfo = await getUserAvator(this.userId)
-    // }
   }
 }
 

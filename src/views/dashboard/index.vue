@@ -1,18 +1,20 @@
 <template>
   <div class="dashboard-container">
     <div class="dashboard-text">name: {{ token }}</div>
-    <a
+    <!-- <a
       href="http://localhost:8080/assets/common/动画02.jpg"
       download="../../assets/common/动画02.jpg"
-    >点击下载头像</a>
+    >点击下载头像</a> -->
+    <!-- <Upload @onSuccess="onSuccess" /> -->
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-
+// import Upload from '@/components/Upload'
 export default {
   name: 'Dashboard',
+  // components: { Upload },
   computed: {
     ...mapGetters(['token'])
   },
@@ -28,7 +30,9 @@ export default {
     // })
   },
   methods: {
-
+    // onSuccess(file) {
+    //   console.log(file.url)
+    // }
   }
 }
 </script>
