@@ -72,7 +72,7 @@ export default {
     // 删除
     async del(id) {
       try {
-        await this.$confirm('此操作将永久删除权限, 是否继续?', '提示')
+        await this.$confirm('此操作将永久删除权限, 是否继续?', '提示', { type: 'warning' })
         await delPermissionAPI(id)
         this.$message.success('删除成功')
         this.getPermissionList()
