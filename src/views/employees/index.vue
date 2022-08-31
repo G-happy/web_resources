@@ -52,7 +52,7 @@
               <el-button type="text" size="small">转正</el-button>
               <el-button type="text" size="small">调岗</el-button>
               <el-button type="text" size="small">离职</el-button>
-              <el-button type="text" size="small">角色</el-button>
+              <el-button type="text" size="small" @click="assignRole(row.id)">角色</el-button>
               <el-button type="text" size="small" @click="delEmployees(row.id)">删除</el-button>
             </template>
           </el-table-column>
@@ -74,6 +74,9 @@
     <el-dialog title="头像二维码" :visible.sync="ercodeDialog" width="30%">
       <canvas id="canvas" />
     </el-dialog>
+    <!-- 分配弹层 -->
+    <assignRole ref="assignRoleRef" v-model="roleDialog" :user-id="currentId" />
+    <!-- <assignRole :value="roleDialog" @input="" /> -->
   </div>
 </template>
 
@@ -83,11 +86,12 @@ import { formatDate } from '@/filters'
 // 处理聘用形式的数据
 import EmployeeEnum from '@/api/constant/employees'
 import addEmployee from './components/add-employee.vue'
+import assignRole from './components/assign-role.vue'
 // 生成二维码的插件
 import QrCode from 'qrcode'
 export default {
   name: 'Employees',
-  components: { addEmployee },
+  components: { addEmployee, assignRole },
   data() {
     return {
       // 获取员工列表的配置对象
@@ -102,7 +106,9 @@ export default {
       // 新增员工弹层
       showDialog: false,
       tableLoading: false,
-      ercodeDialog: false
+      ercodeDialog: false,
+      roleDialog: false, // 角色弹层
+      currentId: ''
     }
   },
   created() {
@@ -207,6 +213,14 @@ export default {
         const canvas = document.getElementById('canvas')
         QrCode.toCanvas(canvas, staffPhoto)
       })
+    },
+    // 角色弹层
+    async assignRole(currentId) {
+      this.currentId = currentId
+      await this.$refs.assignRoleRef.getRolesList()
+      await this.$refs.assignRoleRef.getUserDetail()
+
+      this.roleDialog = true
     }
   }
 }
