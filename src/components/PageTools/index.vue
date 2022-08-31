@@ -3,7 +3,7 @@
     <el-card>
       <el-row type="flex" justify="space-between" align="middle">
         <!-- 左侧 -->
-        <el-col>
+        <el-col v-if="showLeft">
           <div :class="`before ${type}`">
             <i v-if="showIcon" :class="`el-icon-${type}  `" />
             <!-- 插槽 -->
@@ -38,6 +38,10 @@ export default {
       }
     },
     showIcon: {
+      type: Boolean,
+      default: true
+    },
+    showLeft: {
       type: Boolean,
       default: true
     }
