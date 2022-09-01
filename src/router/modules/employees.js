@@ -5,7 +5,7 @@ export default {
   component: Layout,
   children: [{
     path: '',
-    name: 'employees',
+    name: 'employees', // 给路由规则加一个name
     component: () => import('@/views/employees'),
     meta: {
       title: '员工管理', icon: 'people'
