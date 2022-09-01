@@ -36,7 +36,7 @@
             label="操作"
           >
             <template slot-scope="scope">
-              <el-button type="success" size="small">分配权限</el-button>
+              <el-button type="success" size="small" @click="managerPer(scope.row)">分配权限</el-button>
               <el-button type="primary" size="small" @click="eidtRoleInfo(scope.row)">编辑</el-button>
               <el-button type="danger" size="small" @click="delRoleInfo(scope.row.id)">删除</el-button>
             </template>
@@ -79,6 +79,8 @@
     </el-tabs>
     <!-- 新增角色的弹窗 -->
     <addRoleDialog ref="roleRef" />
+    <!-- 分配角色的弹层 -->
+    <managerPermission :manager-dialog.sync="managerDialog" />
   </div>
 </template>
 
@@ -86,9 +88,10 @@
 import { mapGetters } from 'vuex'
 import { deleteRoleAPI } from '@/api'
 import addRoleDialog from './components/addRoleDialog.vue'
+import managerPermission from './components/manager-permission.vue'
 export default {
   name: 'Setting',
-  components: { addRoleDialog },
+  components: { addRoleDialog, managerPermission },
   data() {
     return {
       // 默认选择 '用户管理'
@@ -103,7 +106,9 @@ export default {
         address: '北京市昌平区建材城西路金燕龙办公楼一层',
         email: 'bd@itcastcn',
         beizhu: '传智播客官网-好口碑IT培训机构,一样的教育,不一样的品质'
-      }
+      },
+      // 控制分配角色弹层的显示和隐藏
+      managerDialog: false
     }
   },
   computed: {
@@ -160,6 +165,10 @@ export default {
           message: '已取消删除'
         })
       }
+    },
+    // 显示分配权限的弹层
+    managerPer(row) {
+      this.managerDialog = true
     }
   }
 }
