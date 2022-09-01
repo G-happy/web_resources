@@ -80,7 +80,7 @@
     <!-- 新增角色的弹窗 -->
     <addRoleDialog ref="roleRef" />
     <!-- 分配角色的弹层 -->
-    <managerPermission :manager-dialog.sync="managerDialog" />
+    <managerPermission ref="managerRef" :manager-dialog.sync="managerDialog" />
   </div>
 </template>
 
@@ -168,6 +168,7 @@ export default {
     },
     // 显示分配权限的弹层
     managerPer(row) {
+      this.$refs.managerRef.getPermissionList()
       this.managerDialog = true
     }
   }

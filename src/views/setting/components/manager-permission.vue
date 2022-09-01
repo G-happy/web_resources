@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import { getPermissionListAPI } from '@/api'
 export default {
   name: 'HrsaasManagerPermission',
   props: {
@@ -62,6 +63,11 @@ export default {
     // 关闭弹窗
     handleClose() {
       this.$emit('update:managerDialog', false)
+    },
+    async getPermissionList() {
+      const res = await getPermissionListAPI()
+
+      console.log(res)
     },
     // 确认按钮(提交)
     submitFn() {
