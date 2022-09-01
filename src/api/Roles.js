@@ -48,3 +48,13 @@ export function deleteRoleAPI(id) {
     method: 'delete'
   })
 }
+
+// 给角色分配权限
+export function assignPermAPI(data) {
+  return request({
+    url: '/sys/role/assignPrem',
+    method: 'put',
+    data
+  })
+}
+
