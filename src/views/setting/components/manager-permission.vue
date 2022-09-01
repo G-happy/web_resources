@@ -9,7 +9,6 @@
       :data="permData"
       show-checkbox
       node-key="id"
-      :default-expanded-keys="[2, 3]"
       :default-checked-keys="permIds"
       :props="{label:'name'}"
       default-expand-all

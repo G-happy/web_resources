@@ -5,6 +5,7 @@ import app from './modules/app'
 import settings from './modules/settings'
 import user from './modules/user'
 import roles from './modules/roles'
+import permission from './modules/permission'
 // vuex 数据持久化缓存
 import createPersistedState from 'vuex-persistedstate'
 
@@ -15,7 +16,8 @@ const store = new Vuex.Store({
     app,
     settings,
     user,
-    roles
+    roles,
+    permission
   },
   getters,
   plugins: [createPersistedState({

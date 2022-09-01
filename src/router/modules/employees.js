@@ -3,6 +3,7 @@ import Layout from '@/layout'
 export default {
   path: '/employees', // 路径
   component: Layout,
+  meta: { id: 'employees' },
   children: [{
     path: '',
     name: 'employees', // 给路由规则加一个name

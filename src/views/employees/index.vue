@@ -6,7 +6,7 @@
       <PageTools>
         <span slot="before">共{{ total }}条记录</span>
         <template slot="after">
-          <el-button size="small" type="warning" @click="$router.push('/import?type=user')">导入</el-button>
+          <el-button v-if="checkPermission('EMPLOYEES_EXPORT_ENTRY')" size="small" type="warning" @click="$router.push('/import?type=user')">导入</el-button>
           <el-button size="small" type="danger" @click="exportData">导出</el-button>
           <el-button size="small" type="primary" @click="showDialog = true">新增员工</el-button>
         </template>

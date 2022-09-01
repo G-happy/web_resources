@@ -18,9 +18,10 @@ import '@/permission' // permission control
 import Print from 'vue-print-nb'
 Vue.use(Print)
 import components from '@/components'
+import myMixin from '@/mixin/checkPermission'
 // 全局注册组件
 Vue.use(components)
-
+Vue.use(myMixin)
 // 全局自定义指令
 import * as directives from '@/directive'
 // 注册自定义指令

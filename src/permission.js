@@ -10,7 +10,12 @@ router.beforeEach(async(to, from, next) => {
   // 1.已有token
   if (store.getters.token) {
     if (!store.getters.userId) {
-      await store.dispatch('getUserInfo')
+      //
+      const { roles: { menus }} = await store.dispatch('getUserInfo')
+      // 用户信息的 menus 属性, 存储着该用户可以访问的模块
+      store.dispatch('permission/filterRoutes', menus)
+      // 解决白屏问题
+      next(to.path)
     }
     // 1.1 如果还要去登录页,则跳转到首页
     if (to.path === '/login') {

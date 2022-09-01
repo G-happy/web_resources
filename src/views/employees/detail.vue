@@ -71,7 +71,7 @@ export default {
     // 更新
     async updataUserInfo() {
       try {
-        await saveUserDetailByIdAPI()
+        await saveUserDetailByIdAPI(this.userInfo)
         this.$message.success('更新成功')
       } catch (error) {
         this.$message.error('更新失败')

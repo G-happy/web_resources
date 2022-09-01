@@ -11,7 +11,7 @@ import settingRouter from './modules/setting'
 import socialRouter from './modules/social'
 Vue.use(Router)
 // 动态路由
-const asyncRoutes = [approvalsRouter, departmentsRouter, employeesRouter, permissionRouter, attendancesRouter, salarysRouter, settingRouter, socialRouter]
+export const asyncRoutes = [approvalsRouter, departmentsRouter, employeesRouter, permissionRouter, attendancesRouter, salarysRouter, settingRouter, socialRouter]
 /* Layout */
 import Layout from '@/layout'
 
@@ -49,17 +49,18 @@ export const constantRoutes = [
       component: () => import('@/views/dashboard/index'),
       meta: { title: '首页', icon: 'dashboard' }
     }]
-  },
+  }
 
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  // { path: '*', redirect: '/404', hidden: true }
 ]
 
 // 实例化一个 router 对象
 const createRouter = () => new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
-  routes: [...constantRoutes, ...asyncRoutes]
+  routes: [...constantRoutes]
+  // routes: [...constantRoutes, ...asyncRoutes]
 })
 
 // 接收实例化 createRouter() 的返回值
