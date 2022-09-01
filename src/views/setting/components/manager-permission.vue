@@ -24,7 +24,8 @@
 </template>
 
 <script>
-import { getPermissionListAPI } from '@/api'
+import { getPermissionListAPI, getRoleDetailAPI } from '@/api'
+import { tranListToTreeData } from '@/utils'
 export default {
   name: 'HrsaasManagerPermission',
   props: {
@@ -35,28 +36,8 @@ export default {
   },
   data() {
     return {
-      permData: [
-        {
-          code: 'employees',
-          description: '用户管理菜单',
-          enVisible: '1',
-          id: '604f7df5f900be1850edb152',
-          name: '员工管理',
-          pid: '0',
-          type: 1,
-          children: [
-            {
-              code: '214234',
-              description: '412214',
-              enVisible: '0',
-              id: '62f0d56637ecc10a881557f5',
-              name: '智商250',
-              pid: '604f7df5f900be1850edb152',
-              type: 2
-            }
-          ]
-        }
-      ]
+      permData: [],
+      permIds: []
     }
   },
   methods: {
@@ -64,10 +45,11 @@ export default {
     handleClose() {
       this.$emit('update:managerDialog', false)
     },
-    async getPermissionList() {
+    async getPermissionList(id) {
       const res = await getPermissionListAPI()
-
-      console.log(res)
+      const { permIds } = await getRoleDetailAPI(id)
+      this.permData = tranListToTreeData(res, '0')
+      this.permIds = permIds
     },
     // 确认按钮(提交)
     submitFn() {

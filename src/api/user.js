@@ -33,3 +33,11 @@ export function getUserAvator(id) {
     url: `/sys/user/${id}`
   })
 }
+
+// 根据ID获取角色详情
+export function getRoleDetailAPI(id) {
+  return request({
+    url: `/sys/role/${id}`,
+    method: 'get'
+  })
+}

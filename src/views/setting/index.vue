@@ -168,7 +168,7 @@ export default {
     },
     // 显示分配权限的弹层
     managerPer(row) {
-      this.$refs.managerRef.getPermissionList()
+      this.$refs.managerRef.getPermissionList(row.id)
       this.managerDialog = true
     }
   }
