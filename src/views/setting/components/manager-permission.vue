@@ -10,7 +10,7 @@
       show-checkbox
       node-key="id"
       :default-expanded-keys="[2, 3]"
-      :default-checked-keys="['62f0d56637ecc10a881557f5']"
+      :default-checked-keys="permIds"
       :props="{label:'name'}"
       default-expand-all
     />
@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { getPermissionListAPI, getRoleDetailAPI } from '@/api'
+import { getPermissionListAPI, getRoleDetailAPI, assignPermAPI } from '@/api'
 import { tranListToTreeData } from '@/utils'
 export default {
   name: 'HrsaasManagerPermission',
@@ -37,23 +37,33 @@ export default {
   data() {
     return {
       permData: [],
-      permIds: []
+      permIds: [],
+      userId: ''
     }
   },
   methods: {
     // 关闭弹窗
     handleClose() {
+      this.permIds = []
       this.$emit('update:managerDialog', false)
     },
+
     async getPermissionList(id) {
+      this.userId = id
       const res = await getPermissionListAPI()
       const { permIds } = await getRoleDetailAPI(id)
       this.permData = tranListToTreeData(res, '0')
       this.permIds = permIds
     },
     // 确认按钮(提交)
-    submitFn() {
-      this.handleClose()
+    async submitFn() {
+      try {
+        await assignPermAPI({ permIds: this.$refs.permTree.getCheckedKeys(), id: this.userId })
+        this.$message.success('更新权限成功')
+        this.handleClose()
+      } catch (error) {
+        return error
+      }
     }
   }
 }
