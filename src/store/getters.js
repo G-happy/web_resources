@@ -8,6 +8,7 @@ const getters = {
   hrsaasTime: state => state.user.hrsaasTime,
   rolesList: state => state.roles.rolesList,
   total: state => state.roles.total,
-  addDialogVisible: state => state.roles.addDialogVisible
+  addDialogVisible: state => state.roles.addDialogVisible,
+  userInfo: state => state.user.userInfo
 }
 export default getters

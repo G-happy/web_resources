@@ -1,15 +1,38 @@
-// 考勤
+
 import Layout from '@/layout'
-export default {
-  path: '/attendances', // 路径
+
+const attendRouter = {
+  path: '/attendances',
   component: Layout,
+  // name: 'attendances',
   meta: { id: 'attendances' },
-  children: [{
-    path: '',
-    name: 'attendances', // 给路由规则加一个name
-    component: () => import('@/views/attendances'),
-    meta: {
-      title: '考勤', icon: 'skill'
+  children: [
+    {
+      path: '',
+      component: () => import('@/views/attendances'),
+      name: 'attendances',
+      meta: {
+        title: '考勤',
+        icon: 'excel' }
+    },
+    {
+      path: 'archiving',
+      component: () => import('@/views/attendances/historical'),
+      name: 'archiving',
+      hidden: true,
+      meta: {
+        title: '归档'
+      }
+    },
+    {
+      path: 'report/:month',
+      component: () => import('@/views/attendances/report'),
+      name: 'reports',
+      hidden: true,
+      meta: {
+        title: '报表'
+      }
     }
-  }]
+  ]
 }
+export default attendRouter

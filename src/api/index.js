@@ -1,5 +1,5 @@
 export * from './user'
 export * from './Roles'
 export * from './departments'
-export * from './emplotees'
+export * from './employees'
 export * from './permisson'
