@@ -13,7 +13,7 @@ export default {
     }
   }, {
     path: 'detail/:id',
-    name: 'detail',
+    name: 'details',
     hidden: true,
     component: () => import('@/views/employees/detail.vue')
   }, {

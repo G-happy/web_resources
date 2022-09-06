@@ -6,6 +6,7 @@ import settings from './modules/settings'
 import user from './modules/user'
 import roles from './modules/roles'
 import permission from './modules/permission'
+import tagsView from './modules/tagsView'
 // vuex 数据持久化缓存
 import createPersistedState from 'vuex-persistedstate'
 
@@ -17,7 +18,8 @@ const store = new Vuex.Store({
     settings,
     user,
     roles,
-    permission
+    permission,
+    tagsView
   },
   getters,
   plugins: [createPersistedState({

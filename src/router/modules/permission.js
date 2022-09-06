@@ -6,7 +6,7 @@ export default {
   meta: { id: 'permissions' },
   children: [{
     path: '',
-    name: 'permission', // 给路由规则加一个name
+    name: 'permissions', // 给路由规则加一个name
     component: () => import('@/views/permission'),
     meta: {
       title: '权限管理', icon: 'lock'

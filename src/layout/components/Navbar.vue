@@ -13,6 +13,12 @@
 
     <!-- 右侧下拉菜单 -->
     <div class="right-menu">
+      <!-- 放置切换多语言 -->
+      <lang class="right-menu-item" />
+      <!-- 全屏组件 -->
+      <div class="all">
+        <ScreenFull />
+      </div>
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <!-- <img v-imgerror="defaultImg" :src="staffPhoto" class="user-avatar"> -->
@@ -38,11 +44,14 @@ import { mapGetters } from 'vuex'
 // import Breadcrumb from '@/components/Breadcrumb'
 import defaultImg from '@/assets/common/动画02.jpg'
 import Hamburger from '@/components/Hamburger'
+import ScreenFull from '@/components/ScreenFull'
+import lang from '@/lang/index.vue'
 
 export default {
   components: {
     // Breadcrumb,
-    Hamburger
+    Hamburger,
+    ScreenFull, lang
   },
   data() {
     return {
@@ -106,6 +115,10 @@ export default {
     float: right;
     height: 100%;
     line-height: 50px;
+    display: flex;
+    .all{
+      margin-right: 15px;
+    }
 
     &:focus {
       outline: none;

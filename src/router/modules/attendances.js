@@ -27,7 +27,7 @@ const attendRouter = {
     {
       path: 'report/:month',
       component: () => import('@/views/attendances/report'),
-      name: 'reports',
+      name: 'report',
       hidden: true,
       meta: {
         title: '报表'
