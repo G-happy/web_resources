@@ -57,8 +57,16 @@ export const constantRoutes = [
 
 // 实例化一个 router 对象
 const createRouter = () => new Router({
-  // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
+  mode: 'history', // require service support
+  scrollBehavior: (to, from, savePosition) => { // 管理滚动行为
+    if (savePosition) {
+      console.log(savePosition)
+      return savePosition
+    }
+    if (to.path === '/dashboard') {
+      return { y: 0 }
+    }
+  },
   routes: [...constantRoutes]
   // routes: [...constantRoutes, ...asyncRoutes]
 })
