@@ -141,6 +141,9 @@ export default {
       'userInfo'
     ])
   },
+  mounted() {
+    console.log('================================================')
+  },
   methods: {
     lizhi() {
       this.showDialog = true

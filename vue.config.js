@@ -1,6 +1,7 @@
 'use strict'
 const path = require('path')
 const defaultSettings = require('./src/settings.js')
+const CompressionPlugin = require('compression-webpack-plugin')
 
 function resolve(dir) {
   return path.join(__dirname, dir)
@@ -14,6 +15,32 @@ const name = defaultSettings.title || 'vue Admin Template' // page title
 // You can change the port by the following methods:
 // port = 9528 npm run dev OR npm run dev --port = 9528
 const port = process.env.port || process.env.npm_config_port || 8080 // dev port
+
+let cdn = { css: [], js: [] }
+// 通过环境变量 来区分是否使用cdn
+const isProd = process.env.ENV === 'production' // 判断是否是生产环境
+let externals = {}
+if (isProd) {
+  // 如果是生产环境 就排除打包 否则不排除
+  externals = {
+    // key(包名) / value(这个值 是 需要在CDN中获取js, 相当于 获取的js中 的该包的全局的对象的名字)
+    'vue': 'Vue', // 后面的名字不能随便起 应该是 js中的全局对象名
+    'element-ui': 'ELEMENT', // 都是js中全局定义的
+    'xlsx': 'XLSX' // 都是js中全局定义的
+  }
+  // 将体积较大的插件放到CDN服务器上,
+  cdn = {
+    css: [
+      'https://unpkg.com/element-ui/lib/theme-chalk/index.css' // 提前引入elementUI样式
+    ], // 放置css文件目录
+    js: [
+      'https://unpkg.com/vue@2.6.10/dist/vue.js', // vuejs
+      'https://unpkg.com/element-ui/lib/index.js', // element
+      'https://cdn.jsdelivr.net/npm/xlsx@0.16.6/dist/xlsx.full.min.js', // xlsx 相关
+      'https://cdn.jsdelivr.net/npm/xlsx@0.16.6/dist/jszip.min.js' // xlsx 相关
+    ] // 放置js文件目录
+  }
+}
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
@@ -55,10 +82,37 @@ module.exports = {
       alias: {
         '@': resolve('src')
       }
-    }
+    },
+    //
+    externals
   },
   chainWebpack(config) {
+    config.plugin('html').tap((args) => {
+      args[0].cdn = cdn // args 模板 <==> index.html 中的 htmlWebpackPlugin.options
+      return args
+    })
+    const imagesRule = config.module.rule('images')
+    imagesRule
+      .use('image-webpack-loader')
+      .loader('image-webpack-loader')
+      .options({
+        bypassOnDebug: true
+      })
+    //   .end()
     // it can improve the speed of the first screen, it is recommended to turn on preload
+    if (process.env.NODE_ENV === 'production') {
+      config.plugin('compressionPlugin').use(
+        new CompressionPlugin({
+          // filename: '[path].gz[query]',
+          filename: '[path][name].gz[query]',
+          algorithm: 'gzip',
+          test: /\.(js|css)(\?.*)?$/i, // 用['js', 'css']有个缺点就是map文件也会压缩,这时候压缩就没多大意义,用正则会更好一点
+          threshold: 10240, // 单位bytes, 大于10k才会考虑压缩
+          minRatio: 0.8 // 默认压缩率, 压缩结果能低于百分之八十才会进行压缩
+          // deleteOriginalAssets: true //是否删除源文件(不推荐删除, 容易出现chunk报错问题)
+        })
+      )
+    }
     config.plugin('preload').tap(() => [
       {
         rel: 'preload',
@@ -107,7 +161,7 @@ module.exports = {
                 libs: {
                   name: 'chunk-libs',
                   test: /[\\/]node_modules[\\/]/,
-                  priority: 10,
+                  priority: 10, // 优先级, 最先匹配 elementUI
                   chunks: 'initial' // only package third parties that are initially dependent
                 },
                 elementUI: {
@@ -120,11 +174,12 @@ module.exports = {
                   test: resolve('src/components'), // can customize your rules
                   minChunks: 3, //  minimum common number
                   priority: 5,
-                  reuseExistingChunk: true
+                  reuseExistingChunk: true // 被提取过,直接服用
                 }
               }
             })
           // https:// webpack.js.org/configuration/optimization/#optimizationruntimechunk
+          // 不开启会导致浏览器无法使用缓存，也就会导致缓存失效
           config.optimization.runtimeChunk('single')
         }
       )
